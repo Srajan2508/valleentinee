@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Will you be my Valentine Taanu?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fff0f5;
+      --card:#ffffff;
+      --primary:#e91e63;
+      --primary-dark:#c2185b;
+      --text:#2d2a32;
+      --yes:#ffc0cb;
+      --no:#ef4444;
+      --soft:#ffe3ec;
+      --shadow: 0 20px 50px rgba(233,30,99,.15), 0 6px 18px rgba(0,0,0,.06);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100svh; display:grid; place-items:center;
+      font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 18% 22%, #ffe3ec, var(--bg) 60%),
+        radial-gradient(circle at 85% 85%, #ffd1e0, var(--bg) 60%),
+        radial-gradient(circle at 70% 18%, #fff7fb, transparent 55%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    /* floating petals in background */
+    .petal{
+      position:fixed;
+      width:14px; height:14px;
+      background: radial-gradient(circle at 30% 30%, #fff, #ffc0cb 70%);
+      border-radius: 60% 40% 60% 40%;
+      opacity:.55;
+      filter: blur(.2px);
+      pointer-events:none;
+      animation: floaty 8s linear infinite;
+      z-index:0;
+    }
+    @keyframes floaty{
+      from { transform: translateY(-20px) translateX(0) rotate(0deg); }
+      to   { transform: translateY(110vh) translateX(60px) rotate(240deg); }
+    }
+
+    .card{
+      width:min(780px,92vw);
+      background: linear-gradient(180deg, #ffffff, #fff7fb);
+      border-radius:24px;
+      padding:26px 22px 28px;
+      box-shadow: var(--shadow);
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+      min-height:500px;
+      isolation:isolate;
+      z-index:1;
+    }
+
+    /* Fancy border glow */
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      padding:2px;
+      border-radius:24px;
+      background: linear-gradient(135deg,
+        rgba(233,30,99,.35),
+        rgba(255,192,203,.55),
+        rgba(255,255,255,.65),
+        rgba(233,30,99,.22)
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* Soft bottom glow */
+    .card::after{
+      content:"";
+      position:absolute;
+      left:50%; bottom:-150px;
+      transform:translateX(-50%);
+      width:560px; height:290px;
+      background: radial-gradient(circle, rgba(233,30,99,.16), transparent 70%);
+      z-index:0;
+      pointer-events:none;
+    }
+
+    /* subtle pattern overlay */
+    .pattern{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,192,203,.18) 0 2px, transparent 3px),
+        radial-gradient(circle at 82% 28%, rgba(233,30,99,.12) 0 2px, transparent 3px),
+        radial-gradient(circle at 30% 78%, rgba(233,30,99,.10) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 86%, rgba(255,192,203,.16) 0 2px, transparent 3px);
+      opacity:.7;
+      z-index:0;
+      pointer-events:none;
+    }
+
+    /* Corner decorations (inline SVG) */
+    .corner{
+      position:absolute;
+      width:170px;
+      opacity:.30;
+      pointer-events:none;
+      z-index:0;
+      filter: drop-shadow(0 12px 18px rgba(233,30,99,.10));
+    }
+    .corner.tl{top:-18px; left:-18px; transform: rotate(-10deg);}
+    .corner.tr{top:-18px; right:-18px; transform: scaleX(-1) rotate(-10deg);}
+    .corner.bl{bottom:-18px; left:-18px; transform: scaleY(-1) rotate(-10deg);}
+    .corner.br{bottom:-18px; right:-18px; transform: scale(-1) rotate(-10deg);}
+
+    .content{ position:relative; z-index:1; }
+
+    /* Bouquet hero */
+    .hero{
+      display:grid;
+      gap:10px;
+      place-items:center;
+      margin-top:2px;
+    }
+
+    .tag{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(255,192,203,.35);
+      border: 1px solid rgba(233,30,99,.12);
+      color:#8b0f3a;
+      font-weight:800;
+      font-size:13px;
+      margin: 8px 0 2px;
+    }
+
+    .bouquet-wrap{
+      width:min(360px,78vw);
+      display:grid;
+      place-items:center;
+      margin: 4px auto 2px;
+      position:relative;
+    }
+    .bouquet{
+      width:100%;
+      max-width:360px;
+      filter: drop-shadow(0 16px 28px rgba(233,30,99,.18));
+      transform: translateY(2px);
+    }
+    .sparkle{
+      position:absolute;
+      inset:auto auto 6% 10%;
+      width:10px; height:10px;
+      border-radius:50%;
+      background: rgba(255,255,255,.95);
+      box-shadow:
+        24px -12px 0 rgba(255,255,255,.75),
+        64px 10px 0 rgba(255,255,255,.70),
+        110px -18px 0 rgba(255,255,255,.60);
+      filter: blur(.2px);
+      opacity:.95;
+      animation: twinkle 1.8s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle{
+      from{ transform: translateY(0) scale(.95); opacity:.75; }
+      to{ transform: translateY(-2px) scale(1.05); opacity:1; }
+    }
+
+    h1{
+      margin:8px 0 4px;
+      font-size:clamp(28px,4.6vw,46px);
+      line-height:1.1;
+      font-weight:900;
+      color:var(--primary);
+      letter-spacing:.2px;
+      text-shadow: 0 8px 22px rgba(233,30,99,.12);
+    }
+    p.subtitle{ margin:0 0 12px; opacity:.9; }
+    .tiny{font-size:12px}
+
+    .cta{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      margin:18px 0 6px;
+      flex-wrap:wrap
+    }
+
+    button{
+      border:0;
+      border-radius:999px;
+      padding:12px 22px;
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .08s ease, box-shadow .2s ease, background .2s ease;
+      box-shadow:0 10px 22px rgba(0,0,0,.10);
+      position:relative;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .yes{
+      background:var(--yes);
+      color:#8b0f3a;
+      border:2px solid #f8a9b8;
+    }
+    .yes:hover{transform:translateY(-1px)}
+    .yes:active{transform:translateY(0px) scale(.99)}
+
+    .no{
+      background:#fff;
+      color:var(--no);
+      border:2px solid var(--no);
+    }
+    .no:hover{transform:translateY(-1px)}
+
+    .hidden{display:none}
+
+    .result{
+      margin-top:12px;
+      animation:pop .35s ease-out;
+      position:relative;
+      z-index:1;
+    }
+    .result h2{
+      font-size:clamp(26px,4vw,38px);
+      margin:6px 0 10px;
+      color:var(--primary-dark);
+      text-shadow: 0 10px 24px rgba(233,30,99,.14);
+    }
+
+    /* Celebration overlay after YES */
+    .celebrate{
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      pointer-events:none;
+      z-index:2;
+      opacity:0;
+      transition: opacity .25s ease;
+    }
+    .celebrate.show{ opacity:1; }
+    .yay{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background: rgba(255,255,255,.70);
+      border:1px solid rgba(233,30,99,.18);
+      box-shadow: 0 16px 40px rgba(233,30,99,.18);
+      font-weight:900;
+      color: #8b0f3a;
+      transform: translateY(-6px);
+      animation: bounce .7s ease-in-out infinite alternate;
+    }
+    @keyframes bounce{
+      from{ transform: translateY(-8px) scale(1); }
+      to{ transform: translateY(-12px) scale(1.02); }
+    }
+
+    /* Floating hearts after YES */
+    .hearts{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:3;
+      overflow:hidden;
+    }
+    .heart-float{
+      position:absolute;
+      bottom:-40px;
+      font-size:18px;
+      opacity:.9;
+      animation: rise 2.6s ease-in infinite;
+      filter: drop-shadow(0 10px 12px rgba(233,30,99,.25));
+    }
+    @keyframes rise{
+      0%{ transform: translateY(0) translateX(0) scale(.9); opacity:0; }
+      15%{ opacity:1; }
+      100%{ transform: translateY(-110vh) translateX(40px) scale(1.25); opacity:0; }
+    }
+
+    .gif-wrap{
+      display:flex; gap:14px; flex-wrap:wrap;
+      justify-content:center; align-items:center;
+    }
+    .gif{
+      width:min(330px,42vw);
+      border-radius:14px;
+      box-shadow:0 12px 28px rgba(233,30,99,.20);
+    }
+
+    @keyframes pop{
+      0%{transform:scale(.95);opacity:0}
+      100%{transform:scale(1);opacity:1}
+    }
+
+    footer{margin-top:18px; font-size:12px; opacity:.75}
+
+    @media (max-width:480px){
+      .card{min-height:600px;}
+      .bouquet-wrap{width:min(340px,88vw);}
+      .corner{width:140px;}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- background petals -->
+  <span class="petal" style="left:12%; animation-delay:-1s; opacity:.45"></span>
+  <span class="petal" style="left:28%; animation-delay:-3s; width:12px; height:12px"></span>
+  <span class="petal" style="left:52%; animation-delay:-2.2s; width:16px; height:16px; opacity:.4"></span>
+  <span class="petal" style="left:74%; animation-delay:-4s"></span>
+  <span class="petal" style="left:90%; animation-delay:-5.2s; width:11px; height:11px; opacity:.35"></span>
+
+  <main class="card" role="main" aria-live="polite">
+    <div class="pattern"></div>
+
+    <!-- corner floral svg (reused in 4 corners) -->
+    <svg class="corner tl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff80ab"/>
+          <stop offset="1" stop-color="#e91e63"/>
+        </linearGradient>
+      </defs>
+      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
+      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
+      <g transform="translate(78 96)">
+        <circle r="12" fill="#ffd54a"/>
+        <g fill="url(#cg)">
+          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
+        </g>
+      </g>
+      <g transform="translate(120 60)">
+        <circle r="10" fill="#ffd54a"/>
+        <g fill="#ffc0cb">
+          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
+        </g>
+      </g>
+    </svg>
+    <svg class="corner tr" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <use href="#"></use>
+    </svg>
+    <!-- simplest: duplicate same path by reusing the same svg via copy -->
+    <svg class="corner tr" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="cg2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff80ab"/>
+          <stop offset="1" stop-color="#e91e63"/>
+        </linearGradient>
+      </defs>
+      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
+      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
+      <g transform="translate(78 96)">
+        <circle r="12" fill="#ffd54a"/>
+        <g fill="url(#cg2)">
+          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
+        </g>
+      </g>
+      <g transform="translate(120 60)">
+        <circle r="10" fill="#ffd54a"/>
+        <g fill="#ffc0cb">
+          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
+        </g>
+      </g>
+    </svg>
+
+    <svg class="corner bl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff80ab"/>
+          <stop offset="1" stop-color="#e91e63"/>
+        </linearGradient>
+      </defs>
+      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
+      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
+      <g transform="translate(78 96)">
+        <circle r="12" fill="#ffd54a"/>
+        <g fill="url(#cg3)">
+          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
+        </g>
+      </g>
+      <g transform="translate(120 60)">
+        <circle r="10" fill="#ffd54a"/>
+        <g fill="#ffc0cb">
+          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
+        </g>
+      </g>
+    </svg>
+
+    <svg class="corner br" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="cg4" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff80ab"/>
+          <stop offset="1" stop-color="#e91e63"/>
+        </linearGradient>
+      </defs>
+      <path d="M28 170 C55 120, 70 95, 105 72 C132 54, 170 52, 182 24" fill="none" stroke="#2fb07b" stroke-width="10" stroke-linecap="round"/>
+      <path d="M62 122 C45 118, 34 104, 44 92 C56 78, 74 92, 72 108 C71 118, 68 124, 62 122Z" fill="#3fd09b"/>
+      <g transform="translate(78 96)">
+        <circle r="12" fill="#ffd54a"/>
+        <g fill="url(#cg4)">
+          <ellipse rx="18" ry="11" transform="rotate(0) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(60) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(120) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(180) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(240) translate(23 0)"/>
+          <ellipse rx="18" ry="11" transform="rotate(300) translate(23 0)"/>
+        </g>
+      </g>
+      <g transform="translate(120 60)">
+        <circle r="10" fill="#ffd54a"/>
+        <g fill="#ffc0cb">
+          <ellipse rx="15" ry="9" transform="rotate(0) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(60) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(120) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(180) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(240) translate(18 0)"/>
+          <ellipse rx="15" ry="9" transform="rotate(300) translate(18 0)"/>
+        </g>
+      </g>
+    </svg>
+
+    <div class="content">
+      <div class="hero">
+        <div class="tag">💐 A little bouquet for you</div>
+
+        <div class="bouquet-wrap" aria-hidden="true">
+          <div class="sparkle"></div>
+
+          <!-- inline bouquet -->
+          <svg class="bouquet" viewBox="0 0 420 360" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="wrap" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff1f6"/>
+                <stop offset="1" stop-color="#ffd1e0"/>
+              </linearGradient>
+              <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ff80ab"/>
+                <stop offset="1" stop-color="#e91e63"/>
+              </linearGradient>
+              <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#e91e63" flood-opacity=".18"/>
+              </filter>
+            </defs>
+
+            <path filter="url(#softShadow)"
+              d="M90 330 C150 250, 155 210, 165 180 C190 105, 285 105, 305 180 C315 210, 320 250, 330 330 Z"
+              fill="url(#wrap)" stroke="#f5a7bb" stroke-opacity=".55" stroke-width="3" />
+            <path
+              d="M110 330 C160 260, 170 220, 185 185 C205 130, 270 130, 290 185 C305 220, 310 260, 312 330 Z"
+              fill="#fff" opacity=".35" />
+
+            <path d="M210 115 C200 170, 200 220, 200 295" stroke="#2fb07b" stroke-width="8" stroke-linecap="round"/>
+            <path d="M240 120 C235 170, 235 225, 235 295" stroke="#2fb07b" stroke-width="8" stroke-linecap="round"/>
+            <path d="M175 125 C182 170, 188 230, 192 295" stroke="#2fb07b" stroke-width="8" stroke-linecap="round"/>
+
+            <path d="M185 190 C155 180, 140 155, 158 140 C180 121, 205 148, 205 170 C205 188, 197 196, 185 190Z"
+              fill="#3fd09b" opacity=".9"/>
+            <path d="M245 198 C272 186, 295 160, 275 142 C252 121, 233 150, 235 172 C237 190, 236 202, 245 198Z"
+              fill="#3fd09b" opacity=".9"/>
+
+            <g transform="translate(150 120)">
+              <circle cx="0" cy="0" r="12" fill="#ffd54a"/>
+              <g fill="#ff80ab">
+                <ellipse rx="20" ry="12" transform="rotate(0) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(60) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(120) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(180) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(240) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(300) translate(26 0)"/>
+              </g>
+            </g>
+
+            <g transform="translate(215 105)">
+              <circle cx="0" cy="0" r="28" fill="#ff4d6d" opacity=".95"/>
+              <path d="M-18 -2 C-10 -18, 10 -18, 18 -2 C10 12, -10 12, -18 -2Z" fill="#ff80ab" opacity=".9"/>
+              <path d="M-10 6 C-6 -2, 6 -2, 10 6 C6 14, -6 14, -10 6Z" fill="#ffd1e0" opacity=".7"/>
+              <circle cx="0" cy="-2" r="6" fill="#ffd54a" opacity=".9"/>
+            </g>
+
+            <g transform="translate(275 125)">
+              <circle cx="0" cy="0" r="12" fill="#ffd54a"/>
+              <g fill="#ffc0cb">
+                <ellipse rx="20" ry="12" transform="rotate(0) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(60) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(120) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(180) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(240) translate(26 0)"/>
+                <ellipse rx="20" ry="12" transform="rotate(300) translate(26 0)"/>
+              </g>
+            </g>
+
+            <g transform="translate(210 265)">
+              <path d="M-42 0 C-30 -22, -10 -22, 0 0 C-10 22, -30 22, -42 0Z" fill="url(#ribbon)"/>
+              <path d="M42 0 C30 -22, 10 -22, 0 0 C10 22, 30 22, 42 0Z" fill="url(#ribbon)"/>
+              <circle cx="0" cy="0" r="16" fill="#ff80ab" stroke="#e91e63" stroke-width="3"/>
+              <path d="M-10 18 L-40 55" stroke="#e91e63" stroke-width="8" stroke-linecap="round"/>
+              <path d="M10 18 L40 55" stroke="#e91e63" stroke-width="8" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+
+        <h1>Will you be my Valentine Taanu? 💌</h1>
+        <p class="subtitle tiny">Tap a button to answer.</p>
+      </div>
+
+      <div id="question" class="cta" aria-label="answer choices">
+        <button id="yesBtn" class="yes">Yes 💖</button>
+        <button id="noBtn" class="no">No 😅</button>
+      </div>
+
+      <!-- celebration badge (shown after YES) -->
+      <div id="celebrate" class="celebrate" aria-hidden="true">
+        <div class="yay">🎉 Yayyyy!! 💖💐</div>
+      </div>
+
+      <section id="result" class="result hidden">
+        <h2>Ye Le! 🥰</h2>
+        <div class="gif-wrap">
+          <img class="gif" alt="Cute bear hug" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
+          <img class="gif" alt="Adorable blown-away reaction" src="https://media.giphy.com/media/l0ExncehJzexFpRHq/giphy.gif">
+        </div>
+        <p style="margin-top:10px;">💫</p>
+      </section>
+
+      <canvas id="confetti" class="hidden" style="position:fixed;inset:0;pointer-events:none;z-index:4;"></canvas>
+      <div id="hearts" class="hearts hidden" aria-hidden="true"></div>
+    </div>
+  </main>
+
+  <script>
+    const yes = document.getElementById('yesBtn');
+    const no = document.getElementById('noBtn');
+    const result = document.getElementById('result');
+    const question = document.getElementById('question');
+    const celebrate = document.getElementById('celebrate');
+    const heartsLayer = document.getElementById('hearts');
+
+    // YES: reveal + big celebration
+    yes.addEventListener('click', () => {
+      question.classList.add('hidden');
+      result.classList.remove('hidden');
+
+      celebrate.classList.add('show');
+      startConfettiBurst();
+      startFloatingHearts();
+
+      clearInterval(roamTimer);
+      no.style.display = 'none';
+    });
+
+    // NO: roam
+    function placeNoRandomly() {
+      if (getComputedStyle(no).position !== 'fixed') no.style.position = 'fixed';
+      const btnRect = no.getBoundingClientRect();
+      const pad = 8;
+      const maxX = Math.max(0, window.innerWidth - btnRect.width - pad);
+      const maxY = Math.max(0, window.innerHeight - btnRect.height - pad);
+      const x = Math.floor(Math.random() * (maxX - pad + 1)) + pad;
+      const y = Math.floor(Math.random() * (maxY - pad + 1)) + pad;
+      no.style.left = x + 'px';
+      no.style.top  = y + 'px';
+    }
+    let roamTimer = setInterval(placeNoRandomly, 700);
+    ['mouseenter','focus','touchstart','click'].forEach(evt => {
+      no.addEventListener(evt, placeNoRandomly, { passive:true });
+    });
+    window.addEventListener('load', placeNoRandomly);
+    window.addEventListener('resize', placeNoRandomly);
+
+    // Confetti burst (stronger)
+    function startConfettiBurst(){
+      const canvas = document.getElementById('confetti');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      canvas.classList.remove('hidden');
+
+      const colors = ['#ffc0cb','#ff80ab','#ff4d6d','#ffe3ec','#ffd1e0','#ffd54a'];
+      const pieces = Array.from({length: 220}).map(() => ({
+        x: Math.random()*canvas.width,
+        y: -20 - Math.random()*80,
+        r: 3 + Math.random()*5,
+        c: colors[Math.floor(Math.random()*colors.length)],
+        s: 2 + Math.random()*4,
+        a: 1,
+        w: 6 + Math.random()*10,
+        h: 3 + Math.random()*6,
+        rot: Math.random()*Math.PI
+      }));
+
+      let frames = 0;
+      function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        pieces.forEach(p => {
+          ctx.globalAlpha = Math.max(0,p.a);
+          ctx.fillStyle = p.c;
+
+          ctx.save();
+          ctx.translate(p.x,p.y);
+          ctx.rotate(p.rot);
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          ctx.restore();
+
+          p.y += p.s;
+          p.x += Math.sin((frames+p.y)/18) * 1.6;
+          p.rot += 0.03;
+
+          if (p.y > canvas.height * 0.85) p.a -= 0.02;
+        });
+
+        frames++;
+        if (frames < 260) requestAnimationFrame(draw);
+        else canvas.classList.add('hidden');
+      }
+      draw();
+    }
+
+    // Floating hearts celebration
+    function startFloatingHearts(){
+      heartsLayer.classList.remove('hidden');
+      heartsLayer.innerHTML = "";
+      const icons = ["💖","💘","💗","💞","💝","🌸","✨"];
+      const count = 26;
+
+      for(let i=0;i<count;i++){
+        const s = document.createElement("span");
+        s.className = "heart-float";
+        s.textContent = icons[Math.floor(Math.random()*icons.length)];
+        s.style.left = Math.floor(Math.random()*100) + "vw";
+        s.style.animationDelay = (Math.random()*0.9) + "s";
+        s.style.fontSize = (16 + Math.random()*18) + "px";
+        heartsLayer.appendChild(s);
+      }
+
+      // stop after a short celebration window (keeps page clean)
+      setTimeout(() => heartsLayer.classList.add('hidden'), 3200);
+      setTimeout(() => celebrate.classList.remove('show'), 3400);
+    }
+  </script>
+</body>
+</html>
